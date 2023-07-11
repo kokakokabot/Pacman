@@ -46,6 +46,9 @@ def draw_board():
                 pygame.draw.line(screen, 'white', (j * num2, i * num1 + (0.5 * num1)),
                                  (j * num2 + num2, i * num1 + (0.5 * num1)), 3)
 
+def draw_player():
+    pass
+
 
 run = True
 while run:
