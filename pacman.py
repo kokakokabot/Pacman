@@ -17,6 +17,8 @@ player_images = []
 direction = 0
 counter = 0
 flicker = False
+turns_allowed = [False, False, False, False]
+
 
 for i in range(1, 5):
     player_images.append(pygame.transform.scale(pygame.image.load(f'images/player/{i}.png'), (45, 45)))
@@ -66,6 +68,55 @@ def draw_player():
     if direction == 3:
         screen.blit(pygame.transform.rotate(player_images[counter // 5], 270), (player_x, player_y))
 
+def check_position(center_x, center_y):
+    turns = [False, False, False, False]
+    num1 = (HEIGHT-50)/32
+    num2 = (WIDTH/30)
+    num3 = 15
+    # check collisions based on center x and center y of player
+    if center_x // 30 < 29:
+        if direction == 0:
+            if level[center_y // num1][(center_x - num3) // num2] < 3:
+                turns[1] = True
+        if direction == 1:
+            if level[center_y // num1][(center_x + num3) // num2] < 3:
+                turns[0] = True
+        if direction == 2:
+            if level[(center_y + num3) // num1][center_x // num2] < 3:
+                turns[3] = True
+        if direction == 3:
+            if level[(center_y - num3) // num1][center_x // num2] < 3:
+                turns[2] = True
+
+        if direction == 2 or direction == 3:
+            if 12 <= center_x % num2 <= 18:
+                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                    turns[3] = True
+                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                    turns[2] = True
+            if 12 <= center_y % num1 <= 18:
+                if level[center_y // num1][(center_x - num2) // num2] < 3:
+                    turns[1] = True
+                if level[center_y // num1][(center_x + num2) // num2] < 3:
+                    turns[0] = True
+
+        if direction == 0 or direction == 1:
+            if 12 <= center_x % num2 <= 18:
+                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                    turns[3] = True
+                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                    turns[2] = True
+            if 12 <= center_y % num1 <= 18:
+                if level[center_y // num1][(center_x - num3) // num2] < 3:
+                    turns[1] = True
+                if level[center_y // num1][(center_x + num3) // num2] < 3:
+                    turns[0] = True
+    else:
+        turns[0] = True
+        turns[1] = True
+
+
+    return turns
 
 run = True
 while run:
@@ -81,6 +132,9 @@ while run:
     screen.fill('black')
     draw_board()
     draw_player()
+    center_x = player_x + 23
+    center_y = player_y + 24
+    turns_allowed = check_position(center_x, center_y)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
