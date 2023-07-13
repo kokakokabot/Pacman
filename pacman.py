@@ -666,20 +666,20 @@ def draw_misc():
         screen.blit(gameover_text, (100, 300))
 
 
-def check_collisions(score, power, power_count, eaten_ghosts):
+def check_collisions(scor, power, power_count, eaten_ghosts):
     num1 = (HEIGHT - 50) // 32
     num2 = WIDTH // 30
     if 0 < player_x < 870:
         if level[center_y // num1][center_x // num2] == 1:
             level[center_y // num1][center_x // num2] = 0
-            score += 10
-        if level[center_y // num1][center_x // num2] == 1:
+            scor += 10
+        if level[center_y // num1][center_x // num2] == 2:
             level[center_y // num1][center_x // num2] = 0
-            score += 50
+            scor += 50
             power = True
             power_count = 0
             eaten_ghosts = [False, False, False, False]
-    return score, power, power_count, eaten_ghosts
+    return scor, power, power_count, eaten_ghosts
 
 
 def draw_board():
@@ -698,17 +698,18 @@ def draw_board():
                 pygame.draw.line(screen, color, (j * num2, i * num1 + (0.5 * num1)),
                                  (j * num2 + num2, i * num1 + (0.5 * num1)), 3)
             if level[i][j] == 5:
-                pygame.draw.arc(screen, color, [(j * num2 - (num2 * 0.4)) - 2,
-                                                (i * num1 + (0.5 * num1)), num2, num1], 0, PI / 2, 3)
+                pygame.draw.arc(screen, color, [(j * num2 - (num2 * 0.4)) - 2, (i * num1 + (0.5 * num1)), num2, num1],
+                                0, PI / 2, 3)
             if level[i][j] == 6:
-                pygame.draw.arc(screen, color, [(j * num2 + (num2 * 0.5)),
-                                                (i * num1 + (0.5 * num1)), num2, num1], PI / 2, PI, 3)
+                pygame.draw.arc(screen, color,
+                                [(j * num2 + (num2 * 0.5)), (i * num1 + (0.5 * num1)), num2, num1], PI / 2, PI, 3)
             if level[i][j] == 7:
-                pygame.draw.arc(screen, color, [(j * num2 + (num2 * 0.5)),
-                                                (i * num1 - (0.4 * num1)), num2, num1], PI, 3 * PI / 2, 3)
+                pygame.draw.arc(screen, color, [(j * num2 + (num2 * 0.5)), (i * num1 - (0.4 * num1)), num2, num1], PI,
+                                3 * PI / 2, 3)
             if level[i][j] == 8:
-                pygame.draw.arc(screen, color, [(j * num2 - (num2 * 0.4)) - 2,
-                                                (i * num1 - (0.4 * num1)), num2, num1], 3 * PI / 2, 2 * PI, 3)
+                pygame.draw.arc(screen, color,
+                                [(j * num2 - (num2 * 0.4)) - 2, (i * num1 - (0.4 * num1)), num2, num1], 3 * PI / 2,
+                                2 * PI, 3)
             if level[i][j] == 9:
                 pygame.draw.line(screen, 'white', (j * num2, i * num1 + (0.5 * num1)),
                                  (j * num2 + num2, i * num1 + (0.5 * num1)), 3)
@@ -718,56 +719,55 @@ def draw_player():
     # Directions are 0-right, 1-left, 2-up, 3-down
     if direction == 0:
         screen.blit(player_images[counter // 5], (player_x, player_y))
-    if direction == 1:
+    elif direction == 1:
         screen.blit(pygame.transform.flip(player_images[counter // 5], True, False), (player_x, player_y))
-    if direction == 2:
+    elif direction == 2:
         screen.blit(pygame.transform.rotate(player_images[counter // 5], 90), (player_x, player_y))
-    if direction == 3:
+    elif direction == 3:
         screen.blit(pygame.transform.rotate(player_images[counter // 5], 270), (player_x, player_y))
 
 
-def check_position(center_x, center_y):
+def check_position(centerx, centery):
     turns = [False, False, False, False]
-    num1 = (HEIGHT - 50) / 32
-    num2 = (WIDTH / 30)
+    num1 = (HEIGHT - 50) // 32
+    num2 = (WIDTH // 30)
     num3 = 15
-    # check collisions based on center x and center y of player
-    if center_x // 30 < 29:
+    # check collisions based on center x and center y of player +/- fudge number
+    if centerx // 30 < 29:
         if direction == 0:
-            if level[center_y // num1][(center_x - num3) // num2] < 3:
+            if level[centery // num1][(centerx - num3) // num2] < 3:
                 turns[1] = True
         if direction == 1:
-            if level[center_y // num1][(center_x + num3) // num2] < 3:
+            if level[centery // num1][(centerx + num3) // num2] < 3:
                 turns[0] = True
         if direction == 2:
-            if level[(center_y + num3) // num1][center_x // num2] < 3:
+            if level[(centery + num3) // num1][centerx // num2] < 3:
                 turns[3] = True
         if direction == 3:
-            if level[(center_y - num3) // num1][center_x // num2] < 3:
+            if level[(centery - num3) // num1][centerx // num2] < 3:
                 turns[2] = True
 
         if direction == 2 or direction == 3:
-            if 12 <= center_x % num2 <= 18:
-                if level[(center_y + num3) // num1][center_x // num2] < 3:
+            if 12 <= centerx % num2 <= 18:
+                if level[(centery + num3) // num1][centerx // num2] < 3:
                     turns[3] = True
-                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                if level[(centery - num3) // num1][centerx // num2] < 3:
                     turns[2] = True
-            if 12 <= center_y % num1 <= 18:
-                if level[center_y // num1][(center_x - num2) // num2] < 3:
+            if 12 <= centery % num1 <= 18:
+                if level[centery // num1][(centerx - num2) // num2] < 3:
                     turns[1] = True
-                if level[center_y // num1][(center_x + num2) // num2] < 3:
+                if level[centery // num1][(centerx + num2) // num2] < 3:
                     turns[0] = True
-
         if direction == 0 or direction == 1:
-            if 12 <= center_x % num2 <= 18:
-                if level[(center_y + num3) // num1][center_x // num2] < 3:
+            if 12 <= centerx % num2 <= 18:
+                if level[(centery + num1) // num1][centerx // num2] < 3:
                     turns[3] = True
-                if level[(center_y + num3) // num1][center_x // num2] < 3:
+                if level[(centery - num1) // num1][centerx // num2] < 3:
                     turns[2] = True
-            if 12 <= center_y % num1 <= 18:
-                if level[center_y // num1][(center_x - num3) // num2] < 3:
+            if 12 <= centery % num1 <= 18:
+                if level[centery // num1][(centerx - num3) // num2] < 3:
                     turns[1] = True
-                if level[center_y // num1][(center_x + num3) // num2] < 3:
+                if level[centery // num1][(centerx + num3) // num2] < 3:
                     turns[0] = True
     else:
         turns[0] = True
@@ -788,6 +788,83 @@ def move_player(play_x, play_y):
         play_x += player_speed
     return play_x, play_y
 
+def get_targets(blink_x, blink_y, ink_x, ink_y, pink_x, pink_y, clyd_x, clyd_y):
+    if player_x < 450:
+        runaway_x = 900
+    else:
+        runaway_x = 0
+    if player_y < 450:
+        runaway_y = 900
+    else:
+        runaway_y = 0
+    return_target = (380, 400)
+    if powerup:
+        if not blinky.dead and not eaten_ghost[0]:
+            blink_target = (runaway_x, runaway_y)
+        elif not blinky.dead and eaten_ghost[0]:
+            if 340 < blink_x < 560 and 340 < blink_y < 500:
+                blink_target = (400, 100)
+            else:
+                blink_target = (player_x, player_y)
+        else:
+            blink_target = return_target
+        if not inky.dead and not eaten_ghost[1]:
+            ink_target = (runaway_x, player_y)
+        elif not inky.dead and eaten_ghost[1]:
+            if 340 < ink_x < 560 and 340 < ink_y < 500:
+                ink_target = (400, 100)
+            else:
+                ink_target = (player_x, player_y)
+        else:
+            ink_target = return_target
+        if not pinky.dead:
+            pink_target = (player_x, runaway_y)
+        elif not pinky.dead and eaten_ghost[2]:
+            if 340 < pink_x < 560 and 340 < pink_y < 500:
+                pink_target = (400, 100)
+            else:
+                pink_target = (player_x, player_y)
+        else:
+            pink_target = return_target
+        if not clyde.dead and not eaten_ghost[3]:
+            clyd_target = (450, 450)
+        elif not clyde.dead and eaten_ghost[3]:
+            if 340 < clyd_x < 560 and 340 < clyd_y < 500:
+                clyd_target = (400, 100)
+            else:
+                clyd_target = (player_x, player_y)
+        else:
+            clyd_target = return_target
+    else:
+        if not blinky.dead:
+            if 340 < blink_x < 560 and 340 < blink_y < 500:
+                blink_target = (400, 100)
+            else:
+                blink_target = (player_x, player_y)
+        else:
+            blink_target = return_target
+        if not inky.dead:
+            if 340 < ink_x < 560 and 340 < ink_y < 500:
+                ink_target = (400, 100)
+            else:
+                ink_target = (player_x, player_y)
+        else:
+            ink_target = return_target
+        if not pinky.dead:
+            if 340 < pink_x < 560 and 340 < pink_y < 500:
+                pink_target = (400, 100)
+            else:
+                pink_target = (player_x, player_y)
+        else:
+            pink_target = return_target
+        if not clyde.dead:
+            if 340 < clyd_x < 560 and 340 < clyd_y < 500:
+                clyd_target = (400, 100)
+            else:
+                clyd_target = (player_x, player_y)
+        else:
+            clyd_target = return_target
+    return [blink_target, ink_target, pink_target, clyd_target]
 
 run = True
 while run:
