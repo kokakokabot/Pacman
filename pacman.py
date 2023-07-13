@@ -15,6 +15,7 @@ level = copy.deepcopy(boards)
 color = 'blue'
 PI = math.pi
 player_images = []
+
 for i in range(1, 5):
     player_images.append(pygame.transform.scale(pygame.image.load(f'images/player/{i}.png'), (45, 45)))
 blinky_img = pygame.transform.scale(pygame.image.load(f'images/ghosts/red.png'), (45, 45))
@@ -23,9 +24,13 @@ inky_img = pygame.transform.scale(pygame.image.load(f'images/ghosts/blue.png'), 
 clyde_img = pygame.transform.scale(pygame.image.load(f'images/ghosts/orange.png'), (45, 45))
 spooked_img = pygame.transform.scale(pygame.image.load(f'images/ghosts/powerup.png'), (45, 45))
 dead_img = pygame.transform.scale(pygame.image.load(f'images/ghosts/dead.png'), (45, 45))
+
+# Player starting position
 player_x = 450
 player_y = 663
 direction = 0
+
+#Ghost starting positions
 blinky_x = 56
 blinky_y = 58
 blinky_direction = 0
@@ -39,6 +44,8 @@ clyde_x = 440
 clyde_y = 438
 clyde_direction = 2
 counter = 0
+
+
 flicker = False
 turns_allowed = [False, False, False, False]
 direction_command = 0
@@ -48,6 +55,8 @@ powerup = False
 power_counter = 0
 eaten_ghost = [False, False, False, False]
 targets = [(player_x, player_y), (player_x, player_y), (player_x, player_y), (player_x, player_y)]
+
+
 blinky_dead = False
 inky_dead = False
 clyde_dead = False
