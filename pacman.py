@@ -14,18 +14,34 @@ level = boards
 color = 'blue'
 PI = math.pi
 player_images = []
+for i in range(1, 5):
+    player_images.append(pygame.transform.scale(pygame.image.load(f'images/player/{i}.png'), (45, 45)))
 direction = 0
 counter = 0
 flicker = False
 turns_allowed = [False, False, False, False]
 direction_command = 0
 player_speed = 2
-
-for i in range(1, 5):
-    player_images.append(pygame.transform.scale(pygame.image.load(f'images/player/{i}.png'), (45, 45)))
-
+score = 0
 player_x = 450
 player_y = 663
+
+def draw_misc():
+    score_text = font.render(f'Score: {score}', True, 'white')
+    screen.blit(score_text, (10, 920))
+
+def check_collisions(score):
+    num1 = (HEIGHT - 50) // 32
+    num2 = WIDTH // 30
+    if 0 < player_x < 870:
+        if level[center_y // num1][center_x // num2] == 1:
+            level[center_y // num1][center_x // num2] = 0
+            score += 10
+        if level[center_y // num1][center_x // num2] == 1:
+            level[center_y // num1][center_x // num2] = 0
+            score += 50
+
+    return score
 
 def draw_board():
     num1 = ((HEIGHT - 50) // 32)
@@ -131,6 +147,7 @@ def move_player(play_x, play_y):
         play_x += player_speed
     return play_x, play_y
 
+
 run = True
 while run:
     timer.tick(fps)
@@ -145,10 +162,12 @@ while run:
     screen.fill('black')
     draw_board()
     draw_player()
+    draw_misc()
     center_x = player_x + 23
     center_y = player_y + 24
     turns_allowed = check_position(center_x, center_y)
     player_x, player_y = move_player(player_x, player_y)
+    score = check_collisions(score)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
