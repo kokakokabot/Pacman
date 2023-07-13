@@ -30,7 +30,7 @@ blinky_x = 56
 blinky_y = 58
 blinky_direction = 0
 inky_x = 440
-inky_y = 438
+inky_y = 388
 inky_direction = 2
 pinky_x = 440
 pinky_y = 438
@@ -44,19 +44,18 @@ turns_allowed = [False, False, False, False]
 direction_command = 0
 player_speed = 2
 score = 0
-
 powerup = False
 power_counter = 0
-eaten_ghosts = [False, False, False, False]
+eaten_ghost = [False, False, False, False]
 targets = [(player_x, player_y), (player_x, player_y), (player_x, player_y), (player_x, player_y)]
 blinky_dead = False
 inky_dead = False
-pinky_dead = False
 clyde_dead = False
+pinky_dead = False
 blinky_box = False
 inky_box = False
-pinky_box = False
 clyde_box = False
+pinky_box = False
 moving = False
 ghost_speeds = [2, 2, 2, 2]
 startup_counter = 0
@@ -66,9 +65,9 @@ game_won = False
 
 
 class Ghost:
-    def __init__(self, x_cord, y_cord, target, speed, img, direct, dead, box, id):
-        self.x_pos = x_cord
-        self.y_pos = y_cord
+    def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id):
+        self.x_pos = x_coord
+        self.y_pos = y_coord
         self.center_x = self.x_pos + 22
         self.center_y = self.y_pos + 22
         self.target = target
@@ -647,6 +646,8 @@ class Ghost:
         elif self.x_pos > 900:
             self.x_pos - 30
         return self.x_pos, self.y_pos, self.direction
+
+
 def draw_misc():
     score_text = font.render(f'Score: {score}', True, 'white')
     screen.blit(score_text, (10, 920))
@@ -655,12 +656,12 @@ def draw_misc():
     for i in range(lives):
         screen.blit(pygame.transform.scale(player_images[0], (30, 30)), (650 + i * 40, 915))
     if game_over:
-        pygame.draw.rect(screen, 'white', [50, 200, 800, 300],0, 10)
+        pygame.draw.rect(screen, 'white', [50, 200, 800, 300], 0, 10)
         pygame.draw.rect(screen, 'dark gray', [70, 220, 760, 260], 0, 10)
         gameover_text = font.render('Game over! Space bar to restart!', True, 'red')
         screen.blit(gameover_text, (100, 300))
     if game_won:
-        pygame.draw.rect(screen, 'white', [50, 200, 800, 300],0, 10)
+        pygame.draw.rect(screen, 'white', [50, 200, 800, 300], 0, 10)
         pygame.draw.rect(screen, 'dark gray', [70, 220, 760, 260], 0, 10)
         gameover_text = font.render('Victory! Space bar to restart!', True, 'green')
         screen.blit(gameover_text, (100, 300))
@@ -716,7 +717,7 @@ def draw_board():
 
 
 def draw_player():
-    # Directions are 0-right, 1-left, 2-up, 3-down
+    # 0-RIGHT, 1-LEFT, 2-UP, 3-DOWN
     if direction == 0:
         screen.blit(player_images[counter // 5], (player_x, player_y))
     elif direction == 1:
@@ -777,16 +778,16 @@ def check_position(centerx, centery):
 
 
 def move_player(play_x, play_y):
-    # right, left, up, down = 0, 1, 2, 3
     if direction == 0 and turns_allowed[0]:
         play_x += player_speed
     elif direction == 1 and turns_allowed[1]:
         play_x -= player_speed
-    elif direction == 2 and turns_allowed[2]:
-        play_x -= player_speed
+    if direction == 2 and turns_allowed[2]:
+        play_y -= player_speed
     elif direction == 3 and turns_allowed[3]:
-        play_x += player_speed
+        play_y += player_speed
     return play_x, play_y
+
 
 def get_targets(blink_x, blink_y, ink_x, ink_y, pink_x, pink_y, clyd_x, clyd_y):
     if player_x < 450:
@@ -865,6 +866,7 @@ def get_targets(blink_x, blink_y, ink_x, ink_y, pink_x, pink_y, clyd_x, clyd_y):
         else:
             clyd_target = return_target
     return [blink_target, ink_target, pink_target, clyd_target]
+
 
 run = True
 while run:
