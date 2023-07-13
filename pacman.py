@@ -18,7 +18,8 @@ direction = 0
 counter = 0
 flicker = False
 turns_allowed = [False, False, False, False]
-
+direction_command = 0
+player_speed = 2
 
 for i in range(1, 5):
     player_images.append(pygame.transform.scale(pygame.image.load(f'images/player/{i}.png'), (45, 45)))
@@ -118,6 +119,18 @@ def check_position(center_x, center_y):
 
     return turns
 
+def move_player(play_x, play_y):
+    # right, left, up, down = 0, 1, 2, 3
+    if direction == 0 and turns_allowed[0]:
+        play_x += player_speed
+    elif direction == 1 and turns_allowed[1]:
+        play_x -= player_speed
+    elif direction == 2 and turns_allowed[2]:
+        play_x -= player_speed
+    elif direction == 3 and turns_allowed[3]:
+        play_x += player_speed
+    return play_x, play_y
+
 run = True
 while run:
     timer.tick(fps)
@@ -135,19 +148,38 @@ while run:
     center_x = player_x + 23
     center_y = player_y + 24
     turns_allowed = check_position(center_x, center_y)
+    player_x, player_y = move_player(player_x, player_y)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                direction = 0
+                direction_command = 0
             if event.key == pygame.K_LEFT:
-                direction = 1
+                direction_command = 1
             if event.key == pygame.K_UP:
-                direction = 2
+                direction_command = 2
             if event.key == pygame.K_DOWN:
-                direction = 3
+                direction_command = 3
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT and direction_command == 0:
+                direction_command = direction
+            if event.key == pygame.K_LEFT and direction_command == 1:
+                direction_command = direction
+            if event.key == pygame.K_UP and direction_command == 2:
+                direction_command = direction
+            if event.key == pygame.K_DOWN and direction_command == 3:
+                direction_command = direction
+
+    for i in range(4):
+        if direction_command == i and turns_allowed[i]:
+            direction = i
+
+        if player_x > 900:
+            player_x = -47
+        elif player_x < -50:
+            player_x = 897
 
     pygame.display.flip()
 
